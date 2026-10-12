@@ -1,0 +1,467 @@
+:root {
+    --sky: #1f5fae;
+    --deep: #0b2a52;
+    --foam: #ffffff;
+    --shadow-text: 0 1px 2px rgba(5, 25, 55, 0.55), 0 0 24px rgba(5, 25, 55, 0.35);
+    --measure: 64ch;
+    --gutter: clamp(16px, 4vw, 40px);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* Safari auf dem iPhone vergroessert Text in schmalen Spalten von sich aus.
+     Das soll es hier nicht, sonst passt der Text nicht neben die Wabe. */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--deep);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Fester Hintergrund. Eigenes Element statt background-attachment,
+     damit es auch auf dem iPhone fest steht. */
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--sky);
+    background-image: var(--hintergrund);
+    background-size: cover;
+    background-position: 50% 53%;
+    background-repeat: no-repeat;
+  }
+  @keyframes meer-atmen {
+    0%   { transform: scale(1) translate(0, 0); }
+    50%  { transform: scale(1.11) translate(-2.4%, 1.8%); }
+    100% { transform: scale(1) translate(0, 0); }
+  }
+  .bg { inset: -3%; animation: meer-atmen 40s ease-in-out infinite; will-change: transform; transform-origin: 50% 60%; }
+  .bg.still { animation: none; inset: 0; }
+  @media (prefers-reduced-motion: reduce) { .bg { animation: none; inset: 0; } }
+  .bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(5, 25, 55, 0.35) 0%, rgba(5, 25, 55, 0) 45%);
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Kopfzeile mit Menü */
+  .top {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 10;
+    padding-block: 14px;
+    background: var(--glass-strong);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .top .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 24px;
+  }
+  .brand {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.01em;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .brand small {
+    display: block;
+    font-family: var(--body);
+    font-weight: 400;
+    font-size: 0.78rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+  }
+  nav a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 500;
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+  }
+  nav a:hover, nav a:focus-visible { color: var(--accent); border-bottom-color: var(--accent); outline: none; }
+
+  /* Menü-Knopf, nur auf dem Handy */
+  .menue-knopf {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text);
+    font-family: var(--body);
+    font-size: .9rem;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .menue-knopf .balken { display: inline-block; width: 18px; height: 12px; position: relative; }
+  .menue-knopf .balken::before, .menue-knopf .balken::after, .menue-knopf .balken i {
+    content: ""; position: absolute; left: 0; right: 0; height: 2px; background: currentColor; border-radius: 2px;
+    transition: transform .25s ease, opacity .25s ease;
+  }
+  .menue-knopf .balken::before { top: 0; }
+  .menue-knopf .balken i { top: 5px; }
+  .menue-knopf .balken::after { bottom: 0; }
+  .top.offen .menue-knopf .balken::before { transform: translateY(5px) rotate(45deg); }
+  .top.offen .menue-knopf .balken i { opacity: 0; }
+  .top.offen .menue-knopf .balken::after { transform: translateY(-5px) rotate(-45deg); }
+  @media (max-width: 760px) {
+    .top .wrap { justify-content: space-between; flex-wrap: nowrap; }
+    .menue-knopf { display: inline-flex; }
+    nav { flex-basis: 100%; width: 100%; }
+    nav ul {
+      display: grid;
+      gap: 0;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height .35s ease, opacity .25s ease, margin .35s ease;
+    }
+    .top.offen nav ul { max-height: 420px; opacity: 1; margin-top: 12px; }
+    .top.sofort nav ul { transition: none; }
+    nav li { border-top: 1px solid var(--line); }
+    nav a { display: block; padding: 12px 4px; font-size: 1.05rem; border-bottom: 0; }
+    .top.offen .wrap { flex-wrap: wrap; }
+  }
+
+  /* Kopfbereich, steht direkt auf dem Himmel, darum immer weiß */
+  .hero {
+    padding-block: clamp(80px, 16vh, 160px) clamp(60px, 10vh, 120px);
+    color: var(--foam);
+  }
+  .hero {
+    position: relative;
+    z-index: 2;
+  }
+  .hero h1 {
+    font-family: var(--titel);
+    font-weight: var(--titel-weight);
+    font-style: var(--titel-style);
+    font-size: calc(var(--titel-size) * var(--titel-scale, 1));
+    line-height: var(--titel-line);
+    letter-spacing: var(--titel-spacing);
+    margin: 0 0 22px;
+    max-width: 22ch;
+    text-wrap: balance;
+    text-shadow: var(--shadow-text);
+  }
+  @keyframes titel-wobbeln {
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    25%  { transform: translate(3px, -4px) rotate(0.4deg); }
+    50%  { transform: translate(-2px, 2px) rotate(-0.35deg); }
+    75%  { transform: translate(4px, 1px) rotate(0.25deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+  }
+  .hero h1 {
+    margin-left: clamp(0px, 6vw, 80px);
+    margin-top: -24px;
+    transform-origin: 30% 60%;
+    animation: titel-wobbeln 11s ease-in-out infinite;
+    will-change: transform;
+  }
+  .hero h1.still { animation: none; }
+  @media (prefers-reduced-motion: reduce) { .hero h1 { animation: none; } }
+  .hero h1 span { display: block; }
+  .hero h1 strong { font-weight: inherit; display: block; }
+
+  /* Freigestellte Blume, liegt über Meer und Himmel, verschiebbar im Bearbeitungsmodus */
+  .blume {
+    position: absolute;
+    z-index: 1;
+    left: 58%;
+    top: 34vh;
+    width: 34%;
+    max-width: 560px;
+    min-width: 140px;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    filter: drop-shadow(0 18px 30px rgba(5, 25, 55, 0.35));
+  }
+  @keyframes blume-atmen { 0% { transform: scale(1); } 50% { transform: scale(1.055); } 100% { transform: scale(1); } }
+  .blume { animation: blume-atmen 9s ease-in-out infinite; transform-origin: 50% 55%; }
+  .blume.still { animation: none; }
+  @media (max-width: 640px) {
+    /* Auf dem Handy deutlich größer. Die Blume bleibt innerhalb des
+       Bildschirms, damit nur die Wabe rechts übersteht. */
+    .blume { left: 46% !important; top: 20vh !important; width: 68% !important; max-width: none; }
+    /* Kein overflow-x: hidden mehr. Sonst schneidet der Browser die Wabe
+       am Bildschirmrand ab, statt sie nur hinter ihm verschwinden zu lassen. */
+    section.panel::before { background: color-mix(in srgb, var(--glass) 70%, transparent); }
+  }
+  .hero .lines {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+    line-height: 1.35;
+    margin: 0;
+    text-shadow: var(--shadow-text);
+  }
+  .hero .lines span { display: block; }
+
+  /* Abschnitte als Glasflächen */
+  main { display: grid; gap: 28px; padding-block: 0 80px; position: relative; z-index: 2; }
+  @media (min-width: 641px) {
+    main.wrap { max-width: 990px; padding-inline: clamp(24px, 5vw, 60px); }
+  }
+  /* Die Glasflaeche liegt als eigenes Hintergrund-Element hinter dem Inhalt.
+     Grund: Ein Kasten mit backdrop-filter schneidet in Safari alles ab, was
+     ueber seinen Rand ragt. So kann die Wabe rechts hinausragen. */
+  section.panel {
+    position: relative;
+    isolation: isolate;
+    padding: clamp(24px, 4vw, 44px);
+    scroll-margin-top: 90px;
+  }
+  section.panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .eyebrow {
+    font-family: var(--body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  section h2 {
+    font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    line-height: 1.15;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+  section p { max-width: var(--measure); margin: 0 0 1em; }
+  section p:last-child { margin-bottom: 0; }
+  .quote {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 1.3rem;
+    line-height: 1.4;
+    color: var(--accent);
+    border-left: 2px solid var(--accent-deep);
+    padding-left: 18px;
+    margin: 24px 0;
+  }
+  .lead { font-size: 1.12rem; }
+
+  /* Leistungen als aufklappbare Liste */
+  .services { display: grid; gap: 8px; margin-top: 8px; }
+  details {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--chip);
+  }
+  details[open] { background: var(--chip-open); }
+  summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 1.08rem;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: "+";
+    font-weight: 300;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--accent);
+    flex: none;
+  }
+  details[open] summary::after { content: "–"; }
+  summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 10px; }
+  details .inhalt { padding: 0 18px 16px; color: var(--text-soft); }
+  details .inhalt p { font-style: italic; }
+  details .inhalt.lang p { font-style: normal; }
+  .methoden-schluss { margin-top: 22px; }
+  .praxiszeiten-intro { margin-top: 26px; }
+  details .inhalt.lang h3 { font-family: "Lato", "Helvetica Neue", Arial, sans-serif; font-style: italic; font-weight: 300; font-size: 1.35rem; margin: 6px 0 12px; }
+
+  /* Aufklappbare Kästen (Aktuelles, Stimmen) */
+  .klapp-details { border: 0; background: transparent; border-radius: 0; }
+  .klapp-details[open] { background: transparent; }
+  .klapp-details > summary { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 0; font: inherit; }
+  .klapp-details > summary > .eyebrow { display: block; margin: 0 0 10px; }
+  .klapp-details > summary > h2 { margin: 0; }
+  .klapp-details > summary > .eyebrow + h2 { margin-left: 0; }
+  .klapp-details > summary::after { margin-top: 2px; }
+  .klapp-kopf { flex: 1 1 auto; }
+  .klapp-inhalt { padding-top: 20px; }
+  .stimme-name { margin-top: -.4em; color: var(--text-soft); font-size: .92rem; }
+  .praxis-fotos { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 22px; }
+  .praxis-fotos figure { margin: 0; }
+  .praxis-fotos img { display: block; width: 100%; height: 100%; max-height: 420px; object-fit: cover; border: 2px solid #fff; border-radius: 10px; filter: drop-shadow(0 10px 22px rgba(5, 25, 55, 0.35)); }
+
+
+  /* Impressum und Datenschutz kleiner gesetzt */
+  #impressum, #datenschutz { font-size: .88rem; line-height: 1.55; }
+  #impressum h2, #datenschutz h2 { font-size: clamp(1.3rem, 2.6vw, 1.7rem); margin-bottom: 14px; }
+  #impressum h3, #datenschutz h3 { font-size: .95rem; margin: 18px 0 4px; }
+  #impressum h3.rechts-titel { font-family: "Lato", "Helvetica Neue", Arial, sans-serif; font-style: italic; font-weight: 300; font-size: clamp(1.3rem, 2.6vw, 1.7rem); margin: 0 0 14px; scroll-margin-top: 90px; }
+  #impressum h3.rechts-titel + p { margin-top: 0; }
+  #impressum h3.rechts-titel#datenschutz { margin-top: 34px; }
+  #impressum p, #datenschutz p { max-width: 72ch; }
+
+  /* Kontakt */
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .contact-grid dt { font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 4px; }
+  .contact-grid dd { margin: 0; color: var(--text-soft); }
+  .contact-grid dl { margin: 0; }
+  a { color: var(--accent); }
+
+  footer {
+    padding-block: 28px 40px;
+    color: var(--foam);
+    font-size: 0.85rem;
+    text-shadow: var(--shadow-text);
+  }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+  footer a { color: var(--foam); }
+
+  @media (max-width: 640px) {
+    /* Auf dem Handy zwei Punkt groesser, damit der Text gut lesbar ist. */
+    body { font-size: 19px; }
+    .hero { padding-top: 56px; }
+    main.wrap { padding-inline: 28px; }
+    main { gap: 36px; }
+    section.panel { padding: 22px 20px; }
+    section.panel::before { border-radius: 16px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
+  /* ---------- Ton ---------- */
+  #ton-knopf {
+    position: fixed;
+    left: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: .55rem .95rem;
+    border: 1px solid rgba(255,255,255,.35);
+    border-radius: 2rem;
+    background: rgba(11, 42, 82, 0.72);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-family: var(--body);
+    font-size: .82rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 10px 30px -12px rgba(0,0,0,.7);
+  }
+  #ton-knopf svg { width: 16px; height: 16px; flex: none; }
+  #ton-knopf .aus { display: none; }
+  #ton-knopf[aria-pressed="true"] .an { display: none; }
+  #ton-knopf[aria-pressed="true"] .aus { display: inline; }
+
+  /* Portrait in Wabenform, "Wer bin ich": Text fließt um die Wabe */
+  #wer-bin-ich, #wer-bist-du, #angebot { display: flow-root; }
+  /* Waben im Leistungsspektrum und bei den Kosten: stehen nicht im Textfluss,
+     sondern oben rechts neben der Überschrift und ragen über den Kastenrand.
+     Der Text darunter bleibt voll breit. Darüber etwas mehr Abstand zum
+     Kasten davor, damit die überstehende Wabe Platz hat. */
+  #leistungen, #kosten { margin-top: 70px; }
+  #leistungen .wabe, #kosten .wabe {
+    position: absolute; float: none; shape-outside: none; margin: 0;
+    width: 29%; top: var(--wabe-oben, -90px); right: var(--wabe-rechts, -60px);
+  }
+  @media (max-width: 640px) {
+    #leistungen, #kosten { margin-top: 60px; }
+    #leistungen .wabe, #kosten .wabe { width: 57%; top: -62px; right: -21%; }
+    #leistungen .wabe img, #kosten .wabe img { width: 100%; }
+    #leistungen .eyebrow, #leistungen h2,
+    #kosten .eyebrow, #kosten h2 { padding-right: 34%; }
+  }
+  #wer-bin-ich p, #wer-bist-du p, #angebot p { max-width: none; }
+  .wabe {
+    --hex: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+    float: right;
+    width: var(--wabe-w, 32%);
+    max-width: 100%;
+    margin: var(--wabe-oben, 0px) var(--wabe-rechts, 0px) .6rem 1.3rem;
+    shape-outside: var(--hex) border-box;
+    shape-margin: var(--wabe-text, 18px);
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 10px 22px rgba(5, 25, 55, 0.35));
+  }
+  .wabe img { display: block; width: 100%; height: auto; }
+  @media (max-width: 640px) {
+    /* Handy: Wabe kleiner und weiter nach rechts geschoben, damit neben ihr
+       genug Platz für den Text bleibt. Sie darf rechts angeschnitten sein. */
+    /* Kein Textumfluss mehr auf dem Handy. Die Wabe steht als eigener Block
+       rechts unter der Überschrift, der Text beginnt darunter in voller
+       Breite. So kann sie den Text nicht überdecken, egal welcher Browser. */
+    .wabe {
+      float: right;
+      shape-outside: none;
+      width: 34%;
+      margin: 0 0 .6rem .9rem;
+      overflow: visible;
+    }
+    /* Das Bild ist breiter als der Platz, den es im Textfluss einnimmt.
+       Dadurch ragt es nach rechts ueber den Kasten hinaus, der Text
+       fliesst aber sauber an der schmaleren Kante entlang. */
+    .wabe img { width: 190%; max-width: none; }
+    /* Lange Wörter dürfen in der schmalen Spalte getrennt werden,
+       damit nichts in die Wabe hineinläuft. */
+    #wer-bin-ich p, #wer-bist-du p, #angebot p {
+      hyphens: auto;
+      -webkit-hyphens: auto;
+      overflow-wrap: break-word;
+    }
+  }

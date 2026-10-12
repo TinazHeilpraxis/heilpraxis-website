@@ -1,0 +1,28 @@
+/* Alle Farben, Schriften und Groessen an einer Stelle.
+   Wer etwas am Aussehen aendern will, aendert es hier. */
+
+:root {
+  --glass: rgba(11, 42, 82, 0.55);
+  --glass-strong: rgba(11, 42, 82, 0.8);
+  --text: #ffffff;
+  --text-soft: rgba(255, 255, 255, 0.82);
+  --accent: #f3dfb8;
+  --accent-deep: #e6c98f;
+  --line: rgba(255, 255, 255, 0.22);
+  --chip: rgba(255, 255, 255, 0.06);
+  --chip-open: rgba(255, 255, 255, 0.1);
+
+  --display: "Poppins", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  --body: "Karla", "Helvetica Neue", Arial, sans-serif;
+
+  --titel: "Lato", "Helvetica Neue", Arial, sans-serif;
+  --titel-weight: 400;
+  --titel-size: clamp(2.2rem, 5.6vw, 4rem);
+  --titel-line: 1.15;
+  --titel-style: italic;
+  --titel-spacing: 0;
+
+  /* Hintergrundbild hinter der ganzen Seite */
+  --hintergrund: url(../bilder/hintergrund-meer.webp);
+  --titel-scale: 1;
+}
