@@ -38,10 +38,10 @@
   }
   @keyframes meer-atmen {
     0%   { transform: scale(1) translate(0, 0); }
-    50%  { transform: scale(1.11) translate(-2.4%, 1.8%); }
+    50%  { transform: scale(1.16) translate(-3.6%, 2.7%); }
     100% { transform: scale(1) translate(0, 0); }
   }
-  .bg { inset: -3%; animation: meer-atmen 40s ease-in-out infinite; will-change: transform; transform-origin: 50% 60%; }
+  .bg { inset: -3%; animation: meer-atmen 30s ease-in-out infinite; will-change: transform; transform-origin: 50% 60%; }
   .bg.still { animation: none; inset: 0; }
   @media (prefers-reduced-motion: reduce) { .bg { animation: none; inset: 0; } }
   .bg::after {
@@ -211,13 +211,21 @@
     -webkit-user-drag: none;
     filter: drop-shadow(0 18px 30px rgba(5, 25, 55, 0.35));
   }
-  @keyframes blume-atmen { 0% { transform: scale(1); } 50% { transform: scale(1.055); } 100% { transform: scale(1); } }
-  .blume { animation: blume-atmen 9s ease-in-out infinite; transform-origin: 50% 55%; }
+  @keyframes blume-atmen { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+  .blume { animation: blume-atmen 24s ease-in-out infinite; transform-origin: 50% 55%; }
   .blume.still { animation: none; }
+  @media (min-width: 641px) and (max-width: 1024px) {
+    /* Tablet (seit 13.10.2026): Blume und Titel deutlich größer. */
+    .blume { left: 43% !important; top: 25vh !important; width: 56% !important; max-width: none; }
+    /* Beim Zoomen nach links wachsen, sonst ragt sie rechts aus dem Bildschirm */
+    .blume { transform-origin: 100% 55%; }
+    .hero h1 { font-size: calc(3.5rem * var(--titel-scale, 1)); }
+  }
   @media (max-width: 640px) {
     /* Auf dem Handy deutlich größer. Die Blume bleibt innerhalb des
        Bildschirms, damit nur die Wabe rechts übersteht. */
     .blume { left: 46% !important; top: 20vh !important; width: 68% !important; max-width: none; }
+    .blume { transform-origin: 100% 55%; }
     /* Kein overflow-x: hidden mehr. Sonst schneidet der Browser die Wabe
        am Bildschirmrand ab, statt sie nur hinter ihm verschwinden zu lassen. */
     section.panel::before { background: color-mix(in srgb, var(--glass) 70%, transparent); }
@@ -290,7 +298,7 @@
   .lead { font-size: 1.12rem; }
 
   /* Leistungen als aufklappbare Liste */
-  .services { display: grid; gap: 8px; margin-top: 8px; }
+  .services { margin-top: 8px; }
   details {
     border: 1px solid var(--line);
     border-radius: 10px;
@@ -410,22 +418,19 @@
 
   /* Portrait in Wabenform, "Wer bin ich": Text fließt um die Wabe */
   #wer-bin-ich, #wer-bist-du, #angebot { display: flow-root; }
-  /* Waben im Leistungsspektrum und bei den Kosten: stehen nicht im Textfluss,
-     sondern oben rechts neben der Überschrift und ragen über den Kastenrand.
-     Der Text darunter bleibt voll breit. Darüber etwas mehr Abstand zum
-     Kasten davor, damit die überstehende Wabe Platz hat. */
-  #leistungen, #kosten { margin-top: 70px; }
-  #leistungen .wabe, #kosten .wabe {
-    position: absolute; float: none; shape-outside: none; margin: 0;
-    width: 29%; top: var(--wabe-oben, -90px); right: var(--wabe-rechts, -60px);
-  }
-  @media (max-width: 640px) {
-    #leistungen, #kosten { margin-top: 60px; }
-    #leistungen .wabe, #kosten .wabe { width: 57%; top: -62px; right: -21%; }
-    #leistungen .wabe img, #kosten .wabe img { width: 100%; }
-    #leistungen .eyebrow, #leistungen h2,
-    #kosten .eyebrow, #kosten h2 { padding-right: 34%; }
-  }
+  /* Wabe bei den Kosten fließt wie die oberen drei im Text (seit 13.10.2026). */
+  #kosten, #kontakt { display: flow-root; }
+  #kosten p { max-width: none; }
+  .services { display: flow-root; }
+  .services > details { margin-bottom: 8px; }
+  .services > details:last-of-type { margin-bottom: 0; }
+  /* Wabe im Leistungsspektrum: schwebt rechts wie die oberen drei. Die
+     Klappen-Rahmen bleiben gleich lang und laufen unter ihr durch, die
+     Überschriften und der aufgeklappte Text fließen um sie herum. Klicks
+     gehen durch die Wabe durch; im Bearbeitungsmodus nimmt das Bild sie an,
+     damit man die Wabe verschieben kann. */
+  .services > .wabe { z-index: 3; pointer-events: none; }
+  html.wabe-schieben .services > .wabe img { pointer-events: auto; }
   #wer-bin-ich p, #wer-bist-du p, #angebot p { max-width: none; }
   .wabe {
     --hex: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
@@ -437,7 +442,9 @@
     shape-margin: var(--wabe-text, 18px);
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 10px 22px rgba(5, 25, 55, 0.35));
+    /* Zwei Schatten: ein naher, kräftiger und ein weicher, weiter Schatten.
+       So wirkt die Wabe, als schwebe sie über dem Kasten (seit 13.10.2026). */
+    filter: drop-shadow(0 10px 12px rgba(4, 22, 58, 0.55)) drop-shadow(0 32px 40px rgba(4, 22, 58, 0.8));
   }
   .wabe img { display: block; width: 100%; height: auto; }
   @media (max-width: 640px) {
