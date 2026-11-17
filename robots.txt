@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.heilpraxis-zimmermann.org/sitemap.xml
+Sitemap: https://heilpraxis-zimmermann.org/sitemap.xml
